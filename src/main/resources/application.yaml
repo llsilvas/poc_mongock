@@ -1,0 +1,14 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mongock
+
+logging:
+  level:
+#    org.springframework.web: DEBUG
+#    org.springframework.boot: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+mongock:
+  change-logs-scan-package:
+    - com.example.mongock.changelogs
