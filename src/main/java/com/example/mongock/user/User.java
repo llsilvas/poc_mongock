@@ -18,12 +18,14 @@ public class User {
     private String nome;
     @Field("login")
     private String login;
-
     @Field("password")
     public String password;
+    @Field("status")
+    private String status;
 
     public User(String nome, String login) {
         this.nome = nome;
         this.login = login;
     }
+
 }

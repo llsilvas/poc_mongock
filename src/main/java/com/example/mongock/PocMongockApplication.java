@@ -11,6 +11,5 @@ public class PocMongockApplication {
     public static void main(String[] args) {
         SpringApplication.run(PocMongockApplication.class, args);
     }
-
 }
 

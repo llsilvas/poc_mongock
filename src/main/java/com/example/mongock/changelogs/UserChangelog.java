@@ -5,13 +5,10 @@ import com.example.mongock.user.UserRepository;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @ChangeLog(order = "001")
 public class UserChangelog {
@@ -22,20 +19,47 @@ public class UserChangelog {
     public void dataInitializer(UserRepository userRepository) {
 
         java.lang.reflect.Proxy.getInvocationHandler(userRepository);
-        List<User> clients = IntStream.range(0, INITIAL_USERS)
-                .mapToObj(i -> new User("nome-" + i, "login-" + i))
-                .collect(Collectors.toList());
-        List<User> result = userRepository.saveAll(clients);
+        List<User> clients = new ArrayList<>();
+        int bound = INITIAL_USERS;
+        for (int i = 0; i < bound; i++) {
+            User user = new User("nome-" + i, "login-" + i);
+            clients.add(user);
+        }
+        userRepository.saveAll(clients);
     }
 
-    @ChangeSet(order = "002", author = "mongock", id = "teste")
-    public void userUpdate(MongockTemplate template){
-        List<User> users = template.findAll(User.class, "user");
+    @ChangeSet(id = "inclusao-status", order = "001", author = "mongock")
+    public void statusUser(MongockTemplate template) throws InterruptedException {
 
-        users.stream()
-                .map(user -> user.setPassword(""))
-                .forEach(user -> template.save(user, "user"));
+        List<User> all = template.findAll(User.class);
+
+        for (User user : all) {
+            user.setStatus("A");
+            Thread.sleep(3000);
+            template.save(user);
+        }
 
     }
 
+    @ChangeSet(id = "inclusao-status-outros", order = "003", author = "mongock")
+    public void statusUserOutro(MongockTemplate template){
+
+        List<User> all = template.findAll(User.class).stream().limit(5).collect(Collectors.toList());
+
+        for (User user : all) {
+            user.setStatus("I");
+            template.save(user);
+        }
+    }
+
+    @ChangeSet(id = "inclusao-status-volta", order = "004", author = "mongock")
+    public void statusUserVoltaStatus(MongockTemplate template){
+
+        List<User> all = template.findAll(User.class).stream().limit(55).collect(Collectors.toList());
+
+        for (User user : all) {
+            user.setStatus("I");
+            template.save(user);
+        }
+    }
 }
